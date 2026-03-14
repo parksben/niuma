@@ -1,87 +1,94 @@
 # 🐂🐴 牛马（Niuma）
 
-> AI 驱动的多 Agent 协作平台 —— 让你的产品团队随时在线。
-
-## 下载
-
-前往 [**Releases**](https://github.com/parksben/niuma/releases) 下载最新版本。
-
-| 平台 | 文件 |
-|------|------|
-| Android | `.apk` |
-| iOS | `.ipa`（需自签或 TestFlight） |
-| Windows | `.exe` 安装包 |
-| macOS | `.dmg` |
-| Linux | `.AppImage` |
+> 把 AI 员工拉进你的团队群——让产品经理、工程师、设计师、数据分析师 7×24 在线协作。
 
 ---
 
-## 项目介绍
+## 产品是什么
 
-牛马是一个基于 [OpenClaw](https://openclaw.ai) 的多 Agent 协作系统，支持创建 AI 员工团队，自动完成产品规划、开发、设计、分析等工作。
+牛马是一个多 AI Agent 协作平台。你可以把不同角色的 AI 员工（产品经理、前后端工程师、设计师、测试、数据分析师…）拉进一个项目群，像管理真实团队一样分配任务、推进项目、追踪进度。
 
-你可以在 App 或桌面端创建「产品项目」，拉入不同角色的 AI 员工（规划师、工程师、设计师、分析师…），让他们在群聊里协作完成任务。
+AI 员工会主动发言、写文档、拆需求、做分析、写代码——而不只是等你提问。
 
 ---
 
-## 部署服务端
+## 各端是什么
 
-使用 App 或桌面端前，需要先自行部署 niuma-server。执行以下命令，按向导一键完成部署：
+### 📱 手机 App（Android / iOS）
+最常用的入口。随时随地管理你的 AI 团队：
+- 创建项目群，拉入 AI 员工
+- 给 AI 员工分配任务，查看实时进度
+- 支持发送语音消息，AI 直接理解音频
+- 支持上传文件，AI 员工可读取分析
+- 随手记录想法，AI 帮你整理成需求
+
+### 🖥️ 桌面端（Windows / macOS / Linux）
+适合需要长时间深度工作的场景：
+- 完整的项目工作台，文档、任务、进度一览
+- 支持上传文件，配合 AI 做深度分析
+- 离线可用，核心功能无需联网
+
+### ⚙️ 服务端（niuma-server）
+连接你的设备和 AI 员工的后台：
+- 管理你的账户、项目和所有对话记录
+- 托管前端页面，供 App 的 WebView 加载
+- 处理语音/文件上传，统一存储
+- 通过 [OpenClaw](https://openclaw.ai) 驱动 AI Agent，AI 的所有能力都走这里
+
+> 需要自己部署，数据完全在你手里。
+
+### 🛠️ 命令行工具（niuma CLI）
+一行命令搞定服务端的安装、升级和管理：
+- `niuma install` — 一键安装 niuma-server
+- `niuma start / stop / restart` — 管理服务进程
+- `niuma update` — 升级到最新版本
+- `niuma status` — 查看运行状态和版本
+
+### 🔄 CI / 发布流水线
+所有平台的安装包都在这里统一发布：
+- 每次打版本 tag（如 `v1.2.0`），各端自动构建
+- Android APK、桌面端安装包、服务端二进制，一并发布到 [Releases](https://github.com/parksben/niuma/releases)
+- 从这里下载的版本都是经过自动化测试的正式版本
+
+---
+
+## 快速开始
+
+**第一步：部署服务端**
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/parksben/niuma-cli/main/install.sh | bash
 ```
 
-> 国内用户推荐：
+> 国内用户：
 > ```bash
 > curl -fsSL https://ghproxy.net/https://raw.githubusercontent.com/parksben/niuma-cli/main/install.sh | bash
 > ```
 
-**系统要求：**
-- Linux / macOS 服务器
-- Node.js 18+
-- 已安装 [OpenClaw](https://openclaw.ai)
+服务端需要安装 [OpenClaw](https://openclaw.ai)，并完成 AI 模型配置。
+
+**第二步：下载客户端**
+
+前往 [Releases](https://github.com/parksben/niuma/releases) 下载对应平台的安装包：
+
+| 平台 | 文件 |
+|------|------|
+| Android | `niuma-app-x.x.x-android.apk` |
+| Windows | `niuma-desktop_x.x.x_x64_en-US.msi` |
+| macOS | `niuma-desktop_x.x.x_universal.dmg` |
+| Linux | `niuma-desktop_x.x.x_amd64.AppImage` |
+| 服务端 (Linux x64) | `niuma-server-linux-x64` |
+| 服务端 (macOS ARM) | `niuma-server-macos-arm64` |
+
+**第三步：用 App 连接服务端，开始组建你的 AI 团队。**
 
 ---
 
-## 产品架构
+## 相关仓库
 
-```
-┌─────────────────────────────────────────────────┐
-│               用户端                             │
-│  niuma-app (iOS / Android)                       │
-│  niuma-desktop (Windows / macOS / Linux)         │
-└────────────────────┬────────────────────────────┘
-                     │ HTTP / SSE
-┌────────────────────▼────────────────────────────┐
-│               niuma-server                       │
-│  用户认证 · 项目管理 · Agent 路由 · 消息持久化   │
-└────────────────────┬────────────────────────────┘
-                     │ OpenClaw API
-┌────────────────────▼────────────────────────────┐
-│               OpenClaw                           │
-│  多 Agent 运行时 · 工具调用 · 记忆 · 定时任务   │
-└─────────────────────────────────────────────────┘
-```
-
----
-
-## 技术栈
-
-| 端 | 技术 |
-|----|------|
-| 移动端 | React Native |
-| 桌面端 | Tauri + React |
-| 前端 WebView | React + Vite + TypeScript |
-| 服务端 | Node.js + Express + SQLite |
-| AI 运行时 | OpenClaw Agent 框架 |
-| 认证 | 邮箱 OTP + JWT |
-
----
-
-## 相关工具
-
-- [niuma-cli](https://github.com/parksben/niuma-cli) — 服务端一键安装命令行工具
+| 仓库 | 说明 |
+|------|------|
+| [niuma-cli](https://github.com/parksben/niuma-cli) | 服务端管理 CLI |
 
 ---
 
